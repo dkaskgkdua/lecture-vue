@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MVC with Vanilla.JS</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div>
+    <header>
+        <h2 class="container">검색</h2>
+    </header>
+
+    <div class="container">
+        <form>
+            <input type="text" placeholder="검색어를 입력하세요" autofocus>
+            <button type="reset" class="btn-reset"></button>
+        </form>
+
+        <div class="content">
+            <ul id="tabs" class="tabs">
+                <li>추천 검색어</li>
+                <li>최근 검색어</li>
+            </ul>
+            <div id="search-keyword"></div>
+            <div id="search-history"></div>
+            <div id="search-result"></div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <h2>구동방법</h2>
+    <ul>
+        <li>1. 노드 설치</li>
+        <li>2. cmd에서 npm install -g lite-server  (라이트서버 설치)</li>
+        <li>3. cd 작업경로(1-vanilla 있는)</li>
+        <li>4. lite-server</li>
+        <li>5. 라이트서버가 재가동 해줌</li>
+    </ul>
+</div>
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>
