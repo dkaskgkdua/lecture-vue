@@ -19,12 +19,18 @@ FormView.showResetBtn = function(show = true) {
 
 FormView.bindEvents = function() {
     this.on('submit', e => e.preventDefault())
+    this.resetEl.addEventListener('click', e => this.onClickReset())
     this.inputEl.addEventListener('keyup', e => this.onKeyUp(e))
+}
+FormView.onClickReset = function() {
+    this.emit('@reset', {input: this.inputEl})
+    this.showResetBtn(false)
 }
 
 FormView.onKeyUp = function(e) {
     const enter = 13
     this.showResetBtn(this.inputEl.value.length)
+    //if(!this.inputEl.value.length) this.emit('@reset')
     if(e.keyCode !== enter) return
     // todo...
     this.emit('@submit', {input: this.inputEl.value})
