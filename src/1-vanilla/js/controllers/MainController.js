@@ -12,85 +12,83 @@ const tag = '[MainController]'
 
 export default {
     init() {
-        console.log(tag, 'init()')
-        // 체인닝을 사용했는데 FormView에서 setup시 return this를 해줘야함.
         FormView.setup(document.querySelector('form'))
             .on('@submit', e => this.onSubmit(e.detail.input))
-            .on('@reset', e => this.onResetForm(e.detail.input))
+            .on('@reset', e => this.onResetForm())
+
         TabView.setup(document.querySelector('#tabs'))
-            .on('@Change', e => this.onChangeTab(e.detail.tabName))
-        ResultView.setup(document.querySelector('#search-result'))
+            .on('@change', e => this.onChangeTab(e.detail.tabName))
+
         KeywordView.setup(document.querySelector('#search-keyword'))
-            .on('@Click', e => this.onClickKeyword(e.detail.keyword))
+            .on('@click', e => this.onClickKeyword(e.detail.keyword))
 
         HistoryView.setup(document.querySelector('#search-history'))
-            .on('@Click', e => this.onClickHistory(e.detail.keyword))
+            .on('@click', e => this.onClickHistory(e.detail.keyword))
+            .on('@remove', e => this.onRemoveHistory(e.detail.keyword))
 
-        this.selectedTab = TabView.tabName.recommand
+        ResultView.setup(document.querySelector('#search-result'))
+
+        this.selectedTab = '추천 검색어'
         this.renderView()
     },
-
+    search(query) {
+        FormView.setValue(query)
+        SearchModel.list(query).then(data => {
+            this.onSearchResult(data)
+        })
+    },
     renderView() {
-        console.log(tag, 'renderView()')
+        console.log(tag, 'rednerView()')
         TabView.setActiveTab(this.selectedTab)
 
-        if(this.selectedTab === TabView.tabName.recommand) {
+        if (this.selectedTab === '추천 검색어') {
             this.fetchSearchKeyword()
             HistoryView.hide()
         } else {
-            this.fetchHistoryKeyword()
+            this.fetchSearchHistory()
             KeywordView.hide()
         }
+
         ResultView.hide()
     },
-
     fetchSearchKeyword() {
         KeywordModel.list().then(data => {
             KeywordView.render(data)
         })
     },
-    fetchHistoryKeyword() {
+    fetchSearchHistory() {
         HistoryModel.list().then(data => {
-            HistoryView.render(data)
+            const a = HistoryView.render(data)
+            a.bindRemoveBtn()
         })
-    },
-
-    search(query) {
-        console.log(tag, 'search()', query)
-        FormView.setValue(query)
-        // search api
-        SearchModel.list(query).then(data => {
-            this.onSearchResult(data)
-        })
-
-
     },
 
     onSubmit(input) {
         console.log(tag, 'onSubmit()', input)
         this.search(input)
     },
-
-    onResetForm(input) {
-        input.value = ''
+    onResetForm() {
+        console.log(tag, 'onResetForm()')
         this.renderView()
     },
-
     onSearchResult(data) {
-        ResultView.render(data)
-        KeywordView.hide()
         TabView.hide()
+        KeywordView.hide()
+        HistoryView.hide()
+        ResultView.render(data)
     },
-
     onChangeTab(tabName) {
         this.selectedTab = tabName
         this.renderView()
     },
     onClickKeyword(keyword) {
-
         this.search(keyword)
     },
     onClickHistory(keyword) {
         this.search(keyword)
+    },
+    onRemoveHistory(keyword) {
+        HistoryModel.remove(keyword)
+        this.renderView()
     }
 }
