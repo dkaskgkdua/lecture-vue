@@ -1,9 +1,11 @@
 import FormView from '../views/FormView.js'
 import ResultView from '../views/ResultView.js'
 import KeywordView from '../views/KeywordView.js'
+import HistoryView from '../views/HistoryView.js'
 import TabView from '../views/TabView.js'
 import SearchModel from '../models/SearchModel.js'
 import KeywordModel from '../models/KeywordModel.js'
+import HistoryModel from '../models/HistoryModel.js'
 
 
 const tag = '[MainController]'
@@ -20,7 +22,11 @@ export default {
         ResultView.setup(document.querySelector('#search-result'))
         KeywordView.setup(document.querySelector('#search-keyword'))
             .on('@Click', e => this.onClickKeyword(e.detail.keyword))
-        this.selectedTab = '추천 검색어'
+
+        HistoryView.setup(document.querySelector('#search-history'))
+            .on('@Click', e => this.onClickHistory(e.detail.keyword))
+
+        this.selectedTab = TabView.tabName.recommand
         this.renderView()
     },
 
@@ -28,10 +34,12 @@ export default {
         console.log(tag, 'renderView()')
         TabView.setActiveTab(this.selectedTab)
 
-        if(this.selectedTab === '추천 검색어') {
+        if(this.selectedTab === TabView.tabName.recommand) {
             this.fetchSearchKeyword()
+            HistoryView.hide()
         } else {
-
+            this.fetchHistoryKeyword()
+            KeywordView.hide()
         }
         ResultView.hide()
     },
@@ -39,6 +47,11 @@ export default {
     fetchSearchKeyword() {
         KeywordModel.list().then(data => {
             KeywordView.render(data)
+        })
+    },
+    fetchHistoryKeyword() {
+        HistoryModel.list().then(data => {
+            HistoryView.render(data)
         })
     },
 
@@ -70,10 +83,14 @@ export default {
     },
 
     onChangeTab(tabName) {
-        debugger
+        this.selectedTab = tabName
+        this.renderView()
     },
     onClickKeyword(keyword) {
 
+        this.search(keyword)
+    },
+    onClickHistory(keyword) {
         this.search(keyword)
     }
 }
