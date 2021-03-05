@@ -13,6 +13,11 @@ FormView.setup = function(el) {
     return this
 }
 
+FormView.setValue = function(keyword) {
+    this.inputEl.value = keyword
+    this.showResetBtn(this.inputEl.value.length)
+}
+
 FormView.showResetBtn = function(show = true) {
     this.resetEl.style.display = show ? 'block' : 'none'
 }
