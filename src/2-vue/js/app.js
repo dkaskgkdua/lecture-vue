@@ -10,10 +10,12 @@ new Vue({
         submitted: false,
         searchResult: [],
         tabs:['추천 검색어', '최근 검색어'],
-        selectedTab : ''
+        selectedTab : '',
+        keywords: []
     },
     created() {
         this.selectedTab = this.tabs[0]
+        this.fetchKeyword()
     },
     methods : {
         onSubmit() {
@@ -36,6 +38,15 @@ new Vue({
         },
         onClickTab(tabName) {
             this.selectedTab = tabName
+        },
+        fetchKeyword() {
+            KeywordModel.list().then(data => {
+                this.keywords = data
+            })
+        },
+        onClickKeyword(keyword) {
+            this.query = keyword
+            this.search()
         }
     }
 })
