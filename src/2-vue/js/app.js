@@ -11,21 +11,20 @@ new Vue({
         searchResult: [],
         tabs:['추천 검색어', '최근 검색어'],
         selectedTab : '',
-        keywords: []
+        keywords: [],
+        history : []
     },
     created() {
         this.selectedTab = this.tabs[0]
         this.fetchKeyword()
+        this.fetchHistory()
     },
     methods : {
         onSubmit() {
             this.search()
         },
         onReset() {
-            this.query = ''
-            // todo 검색결과를 숨기기
-            this.submitted = false
-            this.searchResult = []
+            this.resetForm()
         },
         onKeyup() {
             if(!this.query.length) this.onReset()
@@ -35,6 +34,8 @@ new Vue({
                 this.submitted = true
                 this.searchResult = data
             })
+            HistoryModel.add(this.query)
+            this.fetchHistory()
         },
         onClickTab(tabName) {
             this.selectedTab = tabName
@@ -47,6 +48,20 @@ new Vue({
         onClickKeyword(keyword) {
             this.query = keyword
             this.search()
+        },
+        fetchHistory() {
+            HistoryModel.list().then(data => {
+                this.history = data
+            })
+        },
+        onClickRemoveHistory(keyword) {
+            HistoryModel.remove(keyword)
+            this.fetchHistory()
+        },
+        resetForm() {
+            this.query = ''
+            this.submitted = false
+            this.searchResult = []
         }
     }
 })
