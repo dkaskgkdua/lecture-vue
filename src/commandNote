@@ -1,0 +1,18 @@
+webpack을 이용한 구성
+1. sudo npm install vue-cli
+- vue
+- vue list
+2. cd 경로
+3. mkdir 4-single-file-component
+4. cd 4-single-file-component
+5. vue init webpack-simple
+
+? Generate project in current directory? Yes
+? Project name 4-single-file-component
+? Project description A Vue.js project
+? Author 송민준 <dkaskgkdua@gmail.com>
+? License MIT
+? Use sass? No
+
+6. npm install
+7. npm run dev
