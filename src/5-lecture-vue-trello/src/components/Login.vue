@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import {auth, setAuthInHeader} from '../api'
+import {mapActions} from 'vuex'
 
 export default {
   data() {
@@ -40,12 +40,13 @@ export default {
     this.rPath = this.$route.query.rPath || '/'
   },
   methods: {
+    ...mapActions([
+      'LOGIN'
+    ]),
     onSubmit() {
-      auth.login(this.email, this.password)
+      this.LOGIN({email:this.email, password : this.password})
         .then(data => {
-          localStorage.setItem('token', data.accessToken)
-          setAuthInHeader(data.accessToken)
-          this.$router.push(this.rPath)
+          this.$router.push(this.rPath) // 이전 url로 라우팅
         })
         .catch(err => {
           this.error = err.data.error
