@@ -76,9 +76,8 @@ export default {
     //   // this.isAddBoard = true
     //   this.$store.commit('SET_IS_ADD_BOARD', true)
     // },
-    onAddBoard(title) {
-      board.create({title})
-        .then(() => this.fetchData())
+    onAddBoard() {
+      this.fetchData()
     }
   }
 }

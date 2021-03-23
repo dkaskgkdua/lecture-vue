@@ -32,7 +32,7 @@ export const board = {
     return request('get', '/boards')
   },
   create(title) {
-    return request('post','/boards',title)
+    return request('post','/boards',{title})
   }
 }
 
