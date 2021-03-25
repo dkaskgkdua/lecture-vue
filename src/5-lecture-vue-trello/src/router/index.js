@@ -18,13 +18,32 @@ const requireAuth = (to, from, next) => {
 const router = new VueRouter({
   mode: 'history',
   routes: [
-    { path: '/' , component: Home, beforeEnter: requireAuth },
-    { path: '/login', component: Login },
+    {
+      path: '/' ,
+      component: Home,
+      beforeEnter: requireAuth
+    },
+    {
+      path: '/login',
+      component: Login
+    },
     // 중첩 라우팅 설정
-    { path: '/b/:bid', component: Board, beforeEnter: requireAuth , children : [
-        { path : 'c/:cid', component: Card, beforeEnter: requireAuth }
-      ] },
-    { path: '*', component: NotFound }
+    {
+      path: '/b/:bid',
+      component: Board,
+      beforeEnter: requireAuth ,
+      children : [
+        {
+          path : 'c/:cid',
+          component: Card,
+          beforeEnter: requireAuth
+        }
+      ]
+    },
+    {
+      path: '*',
+      component: NotFound
+    }
   ]
 })
 
