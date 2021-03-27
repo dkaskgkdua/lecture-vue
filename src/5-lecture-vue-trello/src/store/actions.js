@@ -19,6 +19,10 @@ const actions = {
   LOGIN({commit}, {email, password}) {
     return api.auth.login(email, password)
       .then(({accessToken}) => commit('LOGIN',accessToken))
+  },
+  ADD_CARD({dispatch, state}, {title, listId, pos}) {
+    return api.card.create(title,listId, pos)
+      .then(() => dispatch('FETCH_BOARD', {id: state.board.id}))
   }
 }
 export default actions
