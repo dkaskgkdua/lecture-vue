@@ -1,19 +1,47 @@
 <template>
-  <div>
-    Card
-    <div v-if="loading">loading card...</div>
-    <div v-else>cid: {{ cid }}</div>
-  </div>
+  <modal class="modal-card">
+    <div slot="header" class="modal-card-header">
+      <div class="modal-card-header-title">
+        <input class="form-control" type="text" :value="card.title" readonly>
+      </div>
+      <a class="modal-close-btn" href="" @click.prevent="onClose">&times;</a>
+    </div>
+    <div slot="body">
+      <h3>Description</h3>
+      <textarea  class="form-control" cols="30" rows="3" placeholder="Add a more detailed description..."
+                 readonly v-model="card.description"></textarea>
+    </div>
+    <div slot="footer"></div>
+  </modal>
 </template>
 
 <script>
+import Modal from './Modal.vue'
+import {mapActions, mapState} from 'vuex'
+
 export default {
-  data() {
-    return {
-      cid: 0,
-      loading: false
-    }
+  components: {
+    Modal
   },
+  computed: {
+    ...mapState({
+      card: 'card',
+      board: 'board'
+    })
+  },
+  created() {
+    const id = this.$route.params.cid
+    this.FETCH_CARD({id})
+  },
+  methods: {
+    ...mapActions([
+      'FETCH_CARD'
+    ]),
+    onClose() {
+      this.$router.push(`/b/${this.board.id}`)
+    }
+  }
+
   /**
    * ------  watch  ---------
    * watch는 기존 Vue 인스턴스 내에 선언된 값의 변화를 감시하는 역할
@@ -27,32 +55,37 @@ export default {
    * computed는 계산된 값을 출력하는 용이라면
    * watch는 어떤 조건이 되었을 때 함수를 실행시키기 위한 트리거로 사용
    */
-  watch: {
-    // 방법 1
-    // '$route'() {
-    //   this.fetchData()
-    // }
-    // 방법 2
-    '$route': {
-      handler: 'fetchData',
-      immediate: true // 즉시 실행 옵션(created랑 중복)
-    }
-  },
-  // created() {
-  //   this.fetchData()
+  // watch: {
+  //   // 방법 1
+  //   // '$route'() {
+  //   //   this.fetchData()
+  //   // }
+  //   // 방법 2
+  //   '$route': {
+  //     handler: 'fetchData',
+  //     immediate: true // 즉시 실행 옵션(created랑 중복)
+  //   }
   // },
-  methods: {
-    fetchData() {
-      this.loading = true
-      setTimeout(() => {
-        this.cid = this.$route.params.cid
-        this.loading = false
-      }, 500)
-    }
-  }
 }
 </script>
 
 <style scoped>
-
+.modal-card .modal-container {
+  min-width: 300px;
+  max-width: 800px;
+  width: 60%;
+}
+.modal-card-header-title {
+  padding-right: 30px;
+}
+.modal-close-btn {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  font-size: 24px;
+  text-decoration: none;
+}
+.modal-card-header {
+  position: relative;
+}
 </style>
