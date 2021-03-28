@@ -4,6 +4,7 @@
       <div>{{data.title}}</div>
       <div class="card-item-meta" v-if="data.description">&equiv;</div>
     </router-link>
+    <a class="delete-card-btn" href="" @click.prevent="onDelete">&times;</a>
   </div>
 </template>
 
@@ -19,6 +20,13 @@ export default {
     })
   },
   methods: {
+    ...mapActions([
+      'DELETE_CARD'
+    ]),
+    onDelete() {
+      if(!window.confirm('Delete this card?')) return
+      this.DELETE_CARD({id: this.data.id})
+    }
   }
 
 }
