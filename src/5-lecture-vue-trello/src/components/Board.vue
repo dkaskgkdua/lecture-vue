@@ -4,6 +4,9 @@
       <div class="board">
         <div class="board-header">
           <span class="board-title">{{board.title}}</span>
+          <a class="board-header-btn show-menu" href="" @click.prevent="onShowSettings">
+            ... Show menu
+          </a>
         </div>
         <div class="list-section-wrapper">
           <div class="list-section">
@@ -14,6 +17,7 @@
         </div>
       </div>
     </div>
+    <BoardSettings v-if="isShowBoardSettings"/>
     <router-view></router-view>
   </div>
 </template>
@@ -22,10 +26,12 @@
 import {mapState, mapMutations, mapActions} from 'vuex'
 import List from './List.vue'
 import dragger from '../utils/dragger.js'
+import BoardSettings from "./BoardSettings.vue";
 
 // $route를 통해 route 정보를 받아볼 수 있음
 export default {
   components: {
+    BoardSettings,
     List
   },
   data() {
@@ -37,20 +43,23 @@ export default {
   },
   computed: {
     ...mapState({
-      board: 'board'
+      board: 'board',
+      isShowBoardSettings: 'isShowBoardSettings'
     })
   },
   created() {
     this.fetchData().then(() => {
       this.SET_THEME(this.board.bgColor)
     })
+    this.SET_IS_SHOW_BOARD_SETTINGS(false)
   },
   updated() {
     this.setCardDragabble()
   },
   methods: {
     ...mapMutations([
-      'SET_THEME'
+      'SET_THEME',
+      'SET_IS_SHOW_BOARD_SETTINGS'
     ]),
     ...mapActions([
       'FETCH_BOARD',
@@ -88,6 +97,9 @@ export default {
         this.UPDATE_CARD(targetCard)
       })
 
+    },
+    onShowSettings() {
+      this.SET_IS_SHOW_BOARD_SETTINGS(true)
     }
   }
 }
