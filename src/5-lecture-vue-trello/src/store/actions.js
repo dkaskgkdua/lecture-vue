@@ -2,6 +2,7 @@
 import * as api from '../api'
 
 const actions = {
+
   ADD_BOARD(_, {title}) {
     return api.board.create(title)
       .then(data => data.item)
@@ -23,10 +24,17 @@ const actions = {
     return api.board.update(id, {title, bgColor})
       .then(() =>dispatch('FETCH_BOARD', {id: state.board.id}))
   },
+
+  ADD_LIST({dispatch, state}, {title, boardId, pos}) {
+    return api.list.create({title, boardId, pos})
+      .then(() =>dispatch('FETCH_BOARD', {id: state.board.id}))
+  },
+
   LOGIN({commit}, {email, password}) {
     return api.auth.login(email, password)
       .then(({accessToken}) => commit('LOGIN',accessToken))
   },
+
   ADD_CARD({dispatch, state}, {title, listId, pos}) {
     return api.card.create(title,listId, pos)
       .then(() => dispatch('FETCH_BOARD', {id: state.board.id}))

@@ -15,6 +15,9 @@
             <div class="list-wrapper" v-for="list in board.lists" :key="list.pos">
               <List :data="list"/>
             </div>
+            <div class="list-wrapper">
+              <AddList/>
+            </div>
           </div>
         </div>
       </div>
@@ -27,14 +30,17 @@
 <script>
 import {mapState, mapMutations, mapActions} from 'vuex'
 import List from './List.vue'
+import AddList from './AddList.vue'
 import dragger from '../utils/dragger.js'
-import BoardSettings from "./BoardSettings.vue";
+import BoardSettings from "./BoardSettings.vue"
+
 
 // $route를 통해 route 정보를 받아볼 수 있음
 export default {
   components: {
     BoardSettings,
-    List
+    List,
+    AddList
   },
   data() {
     return {
