@@ -1,15 +1,18 @@
 <template>
-  <div class="list">
+  <div class="list" :data-list-id="data.id" :data-list-pos="data.pos">
     <div class="list-header">
       <input v-if="isEditTitle" class="form-control input-title" type="text"
              ref="inputTitle" v-model="inputTitle" @blur="onBlurTitle" @keyup.enter = "onSubmitTitle">
       <div v-else class="list-header-title" @click="onClickTitle">{{data.title}}</div>
+      <a class="delete-list-btn" href="" @click.prevent="onDeleteList">&times;</a>
     </div>
-    <div class="card-list">
-      <CardItem v-for="card in data.cards" :key="card.id" :data="card"></CardItem>
+    <div class="card-list" :data-list-id="data.id">
+      <div  v-show="!data.cards.length" class="empty-card-item"></div>
+      <CardItem v-for="card in data.cards" :key="card.id"
+                :data="card" :boardId="data.boardId"></CardItem>
     </div>
     <div v-if="isAddCard">
-      <AddCard :list-id="data.id" @close="isAddCard=false"/>
+      <AddCard :pos="lastCardPos" :list-id="data.id" @close="isAddCard=false"/>
     </div>
     <div v-else>
       <a class="add-card-btn" href="" @click.prevent.stop="isAddCard=true">
@@ -24,6 +27,7 @@ import {mapActions} from 'vuex'
 import AddCard from './AddCard.vue'
 import CardItem from './CardItem.vue'
 
+
 export default {
   components: {AddCard, CardItem},
   props: ['data'],
@@ -37,9 +41,18 @@ export default {
       inputTitle: ''
     }
   },
+  computed: {
+    lastCardPos() {
+      const lastCard = this.data.cards[this.data.cards.length - 1]
+      let pos = 65535
+      if (lastCard) pos = lastCard.pos + pos
+      return pos
+    }
+  },
   methods: {
     ...mapActions([
-      'UPDATE_LIST'
+      'UPDATE_LIST',
+      'DELETE_LIST'
     ]),
     onClickTitle() {
       this.isEditTitle = true
@@ -49,16 +62,20 @@ export default {
       this.isEditTitle = false
     },
     onSubmitTitle() {
-      this.onBlurTitle()
 
       this.inputTitle = this.inputTitle.trim()
       if(!this.inputTitle) return
 
       const id = this.data.id
       const title = this.inputTitle
-      if(title === this.data.title) return
+      if(title === this.data.title) return this.isEditTitle = false
 
       this.UPDATE_LIST({id, title})
+        .then(()=> (this.isEditTitle = false))
+    },
+    onDeleteList() {
+      if(!window.confirm(`Delete ${this.data.title} list?`)) return
+      this.DELETE_LIST({id: this.data.id})
     }
   }
 
